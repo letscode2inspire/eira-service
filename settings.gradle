@@ -1,0 +1,5 @@
+rootProject.name = 'eira-service'
+include 'eira-web'
+include 'eira-dao'
+include 'eira-common'
+
