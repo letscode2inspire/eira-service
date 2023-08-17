@@ -1,0 +1,10 @@
+server:
+  port: 9090
+
+spring:
+  data:
+    redis:
+      host: ${ORIGO_REDIS_HOST:localhost}
+      port: ${ORIGO_REDIS_PORT:6379}
+      repositories:
+        enabled: false

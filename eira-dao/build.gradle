@@ -1,0 +1,41 @@
+plugins {
+    id "org.springframework.boot" version "3.0.4"
+    id "io.spring.dependency-management"
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springBootVersion = '3.0.4'
+}
+
+group = 'com.hummersoft'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation project(":eira-common")
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.vladmihalcea:hibernate-types-60:2.21.1'
+
+}
+
+dependencyManagement {
+    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}

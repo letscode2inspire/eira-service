@@ -1,0 +1,78 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id "io.spring.dependency-management" version "1.1.0"
+    id 'com.google.cloud.tools.jib' version '3.3.1'
+}
+
+allprojects {
+    apply plugin: 'jacoco'
+    repositories {
+        mavenCentral()
+    }
+    jacoco {
+        toolVersion = '0.8.8'
+    }
+}
+
+subprojects {
+
+    ext {
+        springBootVersion = '3.0.4'
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
+    sourceCompatibility = '17'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+        implementation 'com.google.code.gson:gson:2.10'
+        implementation 'commons-io:commons-io:2.11.0'
+        implementation 'commons-codec:commons-codec:1.15'
+        implementation 'io.jsonwebtoken:jjwt:0.9.1'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.projectreactor:reactor-test'
+    }
+    dependencyManagement {
+        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+    }
+
+    jacocoTestReport {
+        reports {
+            html.required = true
+            xml.required = true
+            csv.required = false
+        }
+    }
+    check.dependsOn jacocoTestReport
+}
+
+tasks.register('jacocoRootReport', JacocoReport) {
+    dependsOn = subprojects.test
+    getAdditionalSourceDirs().setFrom(files(subprojects.sourceSets.main.allSource.srcDirs))
+    getSourceDirectories().setFrom(files(subprojects.sourceSets.main.allSource.srcDirs))
+    getClassDirectories().setFrom(files(subprojects.sourceSets.main.output))
+    getExecutionData().setFrom(files(subprojects.jacocoTestReport.executionData))
+    reports {
+        html.required = true
+        xml.required = true
+        csv.required = false
+    }
+    onlyIf = {
+        true
+    }
+    doFirst {
+        getExecutionData().setFrom(files(executionData.findAll {
+            it.exists()
+        }))
+    }
+}

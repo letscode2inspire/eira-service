@@ -1,0 +1,40 @@
+plugins {
+    id "org.springframework.boot" version "3.0.4"
+    id "io.spring.dependency-management"
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    springBootVersion = '3.0.4'
+}
+
+group = 'com.hummersoft'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
+}
+
+dependencyManagement {
+    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    enabled = true
+}
+
+bootJar {
+    enabled = false
+}
